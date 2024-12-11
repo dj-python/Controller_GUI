@@ -10,7 +10,8 @@ class UDPReceiver(QWidget):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(('0.0.0.0', 12345))  # 12345 포트에서 수신
         
-        # self.sock.setblocking(False)  # 비블로킹 모드 설정 제거
+        self.sock.setblocking(False)
+        self.timer = self.startTimer(100)  # 100ms마다 타이머 이벤트 발생
 
     def initUI(self):
         self.layout = QVBoxLayout()
@@ -18,10 +19,12 @@ class UDPReceiver(QWidget):
         self.layout.addWidget(self.textBrowser)
         self.setLayout(self.layout)
 
-    def receiveData(self):
-        while True:
+    def timerEvent(self, event):
+        try:
             data, _ = self.sock.recvfrom(1024)  # 최대 1024바이트 수신
             self.textBrowser.append(data.decode('utf-8'))
+        except BlockingIOError:
+            pass
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -38,10 +41,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     mainWindow = MainWindow()
     mainWindow.show()
-
-    import threading
-    thread = threading.Thread(target=mainWindow.receiver.receiveData)
-    thread.daemon = True
-    thread.start()
-
     sys.exit(app.exec_())
