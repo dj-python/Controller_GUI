@@ -16,12 +16,17 @@ class UDPReceiver(QThread):
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((self.ip, self.port))  # 12345 포트에서 수신
+        self._running = True
 
     def run(self):
         while True:
             data, _ = self.sock.recvfrom(1024)  # 최대 1024바이트 수신
             self.data_received.emit(data.decode('utf-8'))  # 데이터 수신 시그널 발생
             time.sleep(0.1)
+
+    def stop(self):
+        self._running = False
+        self.sock.close()
 
     def senddata(self, target: tuple, msg: str) -> None:
         self.sock.sendto(msg.encode(), target)
@@ -61,19 +66,22 @@ class ControllerGUI:
 
     # region IP, portNumber 입력받기
     def enter(self):
-        self.port_ip = str(self.ui.lineEdit_IP.text())
-        self.portNumber = int(self.ui.lineEdit_portNumber.text())
-        #GUI_Socket.init(ipAddress=self.port_ip, portNumber=self.portNumber)
-        self.Client_port_GUI = self.portNumber
-        self.Client_UDP = ('166.79.25.100', self.Client_port_GUI)
-        self.ui.textBrowser_tx.append('PC IP: 166.79.25.100'+' PC Port Number:'+self.ui.lineEdit_portNumber.text())
-        self.ui.textBrowser_rx.append('Port IP:'+self.ui.lineEdit_IP.text()+' Port Number:'+self.ui.lineEdit_portNumber.text())
+        try:
+            self.port_ip = str(self.ui.lineEdit_IP.text())
+            self.portNumber = int(self.ui.lineEdit_portNumber.text())
+            #GUI_Socket.init(ipAddress=self.port_ip, portNumber=self.portNumber)
+            self.Client_port_GUI = self.portNumber
+            self.Client_UDP = ('166.79.25.100', self.Client_port_GUI)
+            self.ui.textBrowser_tx.append('PC IP: 166.79.25.100'+' PC Port Number:'+self.ui.lineEdit_portNumber.text())
+            self.ui.textBrowser_rx.append('Port IP:'+self.ui.lineEdit_IP.text()+' Port Number:'+self.ui.lineEdit_portNumber.text())
 
-        if self.receiver:
-            self.receiver.terminate()
+            if self.receiver:
+                self.receiver.stop()
+                self.receiver.wait()
 
-        self.start_receiving()
-
+            self.start_receiving()
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
 
     def start_receiving(self):
         ip = self.port_ip
@@ -85,42 +93,68 @@ class ControllerGUI:
     # end region
 
     def Socket_Init_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H2000000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H2000000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H2000000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H2000000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Vac_on_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1001000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1001000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1001000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1001000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Vac_off_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1000000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1000000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1000000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1000000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Clamp_open_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1101000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1101000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1101000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1101000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Clamp_close_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1100000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1100000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1100000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1100000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Rotation_0_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1300000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1300000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1300000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1300000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Rotation_90_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1301000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1301000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1301000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1301000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Socket_open_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1201000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1201000')
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1201000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1201000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Socket_close_btn_clicked(self):
-        self.receiver.senddata(self.Client_UDP, 'H1200000')
-        self.currentTime=time.ctime()[11:19]
-        self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1200000')
-
+        try :
+            self.receiver.senddata(self.Client_UDP, 'H1200000')
+            self.currentTime=time.ctime()[11:19]
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1200000')
+        except Exception as e:
+            self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def rxTextBrowser(self, rxMessage):
         self.ui.textBrowser_rx.append(rxMessage)
 
