@@ -15,7 +15,7 @@ class UDPReceiver(QThread):
         self.ip = ip
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((self.ip, self.port))  # 12345 포트에서 수신
+        self.sock.bind(('166.79.25.100', self.port))  # 12345 포트에서 수신
         self._running = True
 
     def run(self):
