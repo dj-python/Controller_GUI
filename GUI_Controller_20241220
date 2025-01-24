@@ -120,16 +120,16 @@ class ControllerGUI:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Clamp_open_btn_clicked(self):
         try :
-            self.receiver.senddata(self.ip_port_Controller, 'H1101000')
+            self.receiver.senddata(self.ip_port_Controller, 'H1201000')
             self.currentTime=time.ctime()[11:19]
-            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1101000')
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H11201000')
         except Exception as e:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Clamp_close_btn_clicked(self):
         try :
-            self.receiver.senddata(self.ip_port_Controller, 'H1100000')
+            self.receiver.senddata(self.ip_port_Controller, 'H1200000')
             self.currentTime=time.ctime()[11:19]
-            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1100000')
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1200000')
         except Exception as e:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Rotation_0_btn_clicked(self):
@@ -148,20 +148,21 @@ class ControllerGUI:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Socket_open_btn_clicked(self):
         try :
-            self.receiver.senddata(self.ip_port_Controller, 'H1201000')
+            self.receiver.senddata(self.ip_port_Controller, 'H1101000')
             self.currentTime=time.ctime()[11:19]
-            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1201000')
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1101000')
         except Exception as e:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def Socket_close_btn_clicked(self):
         try :
-            self.receiver.senddata(self.ip_port_Controller, 'H1200000')
+            self.receiver.senddata(self.ip_port_Controller, 'H1100000')
             self.currentTime=time.ctime()[11:19]
-            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1200000')
+            self.ui.textBrowser_tx.append(self.currentTime+' ==> '+'H1100000')
         except Exception as e:
             self.ui.textBrowser_tx.append(f"Error: {str(e)}")
     def rxTextBrowser(self, rxMessage):
-        self.ui.textBrowser_rx.append(rxMessage)
+        self.currentTime = time.ctime()[11:19]
+        self.ui.textBrowser_rx.append(self.currentTime +' ==> '+ rxMessage)
 
     def update_widgets(self):
         self.MainWindow.setWindowTitle('PyQt5 GUI')
